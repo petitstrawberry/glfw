@@ -12,16 +12,23 @@ then present to the SWS window. The private extension values are not assigned
 by Khronos, and the SGFX ICD is not Vulkan conformant.
 
 Install one native `/lib/libsws_client_c.so` shared by GLFW and the ICD.
+Install `/lib/libscarlet_ui_window.so` (window C ABI 1) from ScarletUI as well.
+GLFW owns the UI-thread frame and uses ScarletUI's standard titlebar and controls.
+SWS composes the immutable frame above the application's GPU image. Window sizes
+and cursor positions use logical content coordinates; framebuffer sizes use
+physical content pixels. Frame insets, decoration changes, resizable state,
+fullscreen and output scaling are supported.
+
 The application must destroy its swapchains and Vulkan surfaces before destroying
 the GLFW window. Library loading uses Scarlet's eager/global loader mode.
 
 OpenGL/EGL contexts, clipboard integration, custom cursors, window positioning,
-window appearance changes, gamma ramps, and joystick devices are unavailable.
+opacity, custom window icons, gamma ramps, and joystick devices are unavailable.
 Unsupported operations report GLFW errors. Event waiting polls the SWS queue
 with a bounded sleep and honors cross-thread `glfwPostEmptyEvent` wakeups.
 
 Build recipes, pinned dependencies, CI and runtime archives are maintained in
 [scarlet-bundle-lwjgl](https://github.com/petitstrawberry/scarlet-bundle-lwjgl).
 This repository contains the GLFW port sources. The backend can also be selected
-with `GLFW_BUILD_SCARLET` when supplying the native SWS C headers and library to
-CMake.
+with `GLFW_BUILD_SCARLET` when supplying the SWS C headers/library and ScarletUI
+window C headers to CMake. The ScarletUI runtime is loaded when GLFW initializes.
