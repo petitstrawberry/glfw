@@ -44,6 +44,10 @@ typedef struct _GLFWtlsPOSIX
 typedef struct _GLFWmutexPOSIX
 {
     GLFWbool        allocated;
+    #if defined(__scarlet__)
+    pthread_rwlock_t handle;
+#else
     pthread_mutex_t handle;
+#endif
 } _GLFWmutexPOSIX;
 

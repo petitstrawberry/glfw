@@ -44,6 +44,9 @@ static const struct
     GLFWbool (*connect)(int,_GLFWplatform*);
 } supportedPlatforms[] =
 {
+#if defined(_GLFW_SCARLET)
+    { GLFW_PLATFORM_SCARLET, _glfwConnectScarlet },
+#endif
 #if defined(_GLFW_WIN32)
     { GLFW_PLATFORM_WIN32, _glfwConnectWin32 },
 #endif
@@ -68,7 +71,8 @@ GLFWbool _glfwSelectPlatform(int desiredID, _GLFWplatform* platform)
         desiredID != GLFW_PLATFORM_COCOA &&
         desiredID != GLFW_PLATFORM_WAYLAND &&
         desiredID != GLFW_PLATFORM_X11 &&
-        desiredID != GLFW_PLATFORM_NULL)
+        desiredID != GLFW_PLATFORM_NULL &&
+        desiredID != GLFW_PLATFORM_SCARLET)
     {
         _glfwInputError(GLFW_INVALID_ENUM, "Invalid platform ID 0x%08X", desiredID);
         return GLFW_FALSE;
@@ -147,7 +151,8 @@ GLFWAPI int glfwPlatformSupported(int platformID)
         platformID != GLFW_PLATFORM_COCOA &&
         platformID != GLFW_PLATFORM_WAYLAND &&
         platformID != GLFW_PLATFORM_X11 &&
-        platformID != GLFW_PLATFORM_NULL)
+        platformID != GLFW_PLATFORM_NULL &&
+        platformID != GLFW_PLATFORM_SCARLET)
     {
         _glfwInputError(GLFW_INVALID_ENUM, "Invalid platform ID 0x%08X", platformID);
         return GLFW_FALSE;

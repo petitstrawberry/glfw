@@ -26,6 +26,13 @@
 //========================================================================
 
 #include "internal.h"
+#if defined(__scarlet__)
+// The native C runtime provides exclusive rwlocks with the required mutex semantics.
+#define pthread_mutex_init pthread_rwlock_init
+#define pthread_mutex_destroy pthread_rwlock_destroy
+#define pthread_mutex_lock pthread_rwlock_wrlock
+#define pthread_mutex_unlock pthread_rwlock_unlock
+#endif
 
 #if defined(GLFW_BUILD_POSIX_THREAD)
 

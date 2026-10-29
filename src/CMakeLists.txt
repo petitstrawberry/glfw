@@ -142,6 +142,14 @@ if (GLFW_BUILD_WIN32)
     list(APPEND glfw_PKG_LIBS "-lgdi32")
 endif()
 
+if (GLFW_BUILD_SCARLET)
+    target_compile_definitions(glfw PRIVATE _GLFW_SCARLET)
+    target_sources(glfw PRIVATE scarlet_platform.h scarlet_init.c scarlet_window.c scarlet_monitor.c)
+    find_path(SWS_CLIENT_INCLUDE_DIR sws_client.h REQUIRED)
+    target_include_directories(glfw PRIVATE "${SWS_CLIENT_INCLUDE_DIR}")
+    target_link_libraries(glfw PRIVATE sws_client_c)
+endif()
+
 if (GLFW_BUILD_COCOA)
     target_link_libraries(glfw PRIVATE "-framework Cocoa"
                                        "-framework IOKit"

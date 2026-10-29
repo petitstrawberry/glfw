@@ -874,6 +874,7 @@ struct _GLFWlibrary
         bool            KHR_xcb_surface;
         bool            KHR_wayland_surface;
         bool            EXT_headless_surface;
+        bool            SGFX_scarlet_surface;
     } vk;
 
     struct {

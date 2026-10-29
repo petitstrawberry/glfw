@@ -24,6 +24,8 @@ if (DEFINED GLFW_USE_WAYLAND AND UNIX AND NOT APPLE)
         "GLFW_USE_WAYLAND has been removed; delete the CMake cache and set GLFW_BUILD_WAYLAND and GLFW_BUILD_X11 instead")
 endif()
 
+option(GLFW_BUILD_SCARLET "Build support for native Scarlet SWS" OFF)
+
 cmake_dependent_option(GLFW_BUILD_WIN32 "Build support for Win32" ON "WIN32" OFF)
 cmake_dependent_option(GLFW_BUILD_COCOA "Build support for Cocoa" ON "APPLE" OFF)
 cmake_dependent_option(GLFW_BUILD_X11 "Build support for X11" ON "UNIX;NOT APPLE" OFF)
