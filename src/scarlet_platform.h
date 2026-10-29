@@ -26,16 +26,32 @@
 //========================================================================
 
 #include <sws_client.h>
+#include <scarlet_ui_window.h>
 #define GLFW_SCARLET_WINDOW_STATE _GLFWwindowScarlet scarlet;
 #define GLFW_SCARLET_LIBRARY_WINDOW_STATE _GLFWlibraryScarlet scarlet;
 typedef struct _GLFWwindowScarlet {
     uint32_t id;
-    int width, height, lockMods;
+    int width, height, fbwidth, fbheight, lockMods;
+    int reportedWidth, reportedHeight, reportedFbWidth, reportedFbHeight;
+    uint32_t reportedScale;
+    int outerX, outerY;
+    unsigned int clientButtons, frameButtons;
+    SwsSceneGeometry geometry;
+    ScarletUiFrame* frame;
     GLFWbool visible, focused, iconified, maximized, entered;
     double xcursor, ycursor;
 } _GLFWwindowScarlet;
 typedef struct _GLFWlibraryScarlet {
     SwsDisplay display;
+    void* ui;
+    uint32_t (*frameAbi)(void);
+    int32_t (*frameInsets)(uint32_t,uint32_t,ScarletUiInsets*);
+    ScarletUiFrame* (*frameCreate)(void);
+    int32_t (*frameConfigure)(ScarletUiFrame*,const char*,uint32_t,uint32_t,uint32_t,uint32_t);
+    int32_t (*frameRender)(ScarletUiFrame*,ScarletUiFrameView*);
+    int32_t (*framePointer)(ScarletUiFrame*,uint32_t,int32_t,int32_t,uint32_t*);
+    int32_t (*frameDirty)(ScarletUiFrame*);
+    void (*frameDestroy)(ScarletUiFrame*);
     int keycodes[256], scancodes[GLFW_KEY_LAST + 1];
     unsigned int wakeup;
 } _GLFWlibraryScarlet;

@@ -30,7 +30,7 @@ void _glfwFreeMonitorScarlet(_GLFWmonitor* monitor) { }
 void _glfwGetMonitorPosScarlet(_GLFWmonitor* monitor, int* x, int* y)
 { if (x) *x = 0; if (y) *y = 0; }
 void _glfwGetMonitorContentScaleScarlet(_GLFWmonitor* monitor, float* x, float* y)
-{ if (x) *x = 1.f; if (y) *y = 1.f; }
+{ uint32_t scale = 1000; sws_get_output_scale(&scale); if (x) *x = scale/1000.f; if (y) *y = scale/1000.f; }
 void _glfwGetMonitorWorkareaScarlet(_GLFWmonitor* monitor, int* x, int* y, int* w, int* h)
 { _glfwGetMonitorPosScarlet(monitor, x, y); if (w) *w = _glfw.scarlet.display.width; if (h) *h = _glfw.scarlet.display.height; }
 GLFWbool _glfwGetVideoModeScarlet(_GLFWmonitor* monitor, GLFWvidmode* mode)

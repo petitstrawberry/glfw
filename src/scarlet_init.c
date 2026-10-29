@@ -117,6 +117,27 @@ int _glfwInitScarlet(void)
         _glfwInputError(GLFW_PLATFORM_ERROR, "Scarlet: Cannot connect to SWS");
         return GLFW_FALSE;
     }
+    _glfw.scarlet.ui = _glfwPlatformLoadModule("/lib/libscarlet_ui_window.so");
+    if (!_glfw.scarlet.ui)
+    {
+        _glfwInputError(GLFW_PLATFORM_ERROR, "Scarlet: Cannot load ScarletUI window runtime");
+        return GLFW_FALSE;
+    }
+    _glfw.scarlet.frameAbi = (uint32_t (*)(void)) _glfwPlatformGetModuleSymbol(_glfw.scarlet.ui, "scarlet_ui_frame_abi");
+    _glfw.scarlet.frameInsets = (int32_t (*)(uint32_t,uint32_t,ScarletUiInsets*)) _glfwPlatformGetModuleSymbol(_glfw.scarlet.ui, "scarlet_ui_frame_insets");
+    _glfw.scarlet.frameCreate = (ScarletUiFrame* (*)(void)) _glfwPlatformGetModuleSymbol(_glfw.scarlet.ui, "scarlet_ui_frame_create");
+    _glfw.scarlet.frameConfigure = (int32_t (*)(ScarletUiFrame*,const char*,uint32_t,uint32_t,uint32_t,uint32_t)) _glfwPlatformGetModuleSymbol(_glfw.scarlet.ui, "scarlet_ui_frame_configure");
+    _glfw.scarlet.frameRender = (int32_t (*)(ScarletUiFrame*,ScarletUiFrameView*)) _glfwPlatformGetModuleSymbol(_glfw.scarlet.ui, "scarlet_ui_frame_render");
+    _glfw.scarlet.framePointer = (int32_t (*)(ScarletUiFrame*,uint32_t,int32_t,int32_t,uint32_t*)) _glfwPlatformGetModuleSymbol(_glfw.scarlet.ui, "scarlet_ui_frame_pointer");
+    _glfw.scarlet.frameDirty = (int32_t (*)(ScarletUiFrame*)) _glfwPlatformGetModuleSymbol(_glfw.scarlet.ui, "scarlet_ui_frame_dirty");
+    _glfw.scarlet.frameDestroy = (void (*)(ScarletUiFrame*)) _glfwPlatformGetModuleSymbol(_glfw.scarlet.ui, "scarlet_ui_frame_destroy");
+    if (!_glfw.scarlet.frameAbi || !_glfw.scarlet.frameInsets || !_glfw.scarlet.frameCreate ||
+        !_glfw.scarlet.frameConfigure || !_glfw.scarlet.frameRender || !_glfw.scarlet.framePointer ||
+        !_glfw.scarlet.frameDirty || !_glfw.scarlet.frameDestroy || _glfw.scarlet.frameAbi() != 1)
+    {
+        _glfwInputError(GLFW_PLATFORM_ERROR, "Scarlet: Incompatible ScarletUI window ABI");
+        return GLFW_FALSE;
+    }
     memset(_glfw.scarlet.keycodes, -1, sizeof(_glfw.scarlet.keycodes));
     memset(_glfw.scarlet.scancodes, -1, sizeof(_glfw.scarlet.scancodes));
     _glfw.scarlet.keycodes[1] = GLFW_KEY_ESCAPE;
@@ -231,4 +252,8 @@ int _glfwInitScarlet(void)
     _glfwInputMonitor(monitor, GLFW_CONNECTED, _GLFW_INSERT_FIRST);
     return GLFW_TRUE;
 }
-void _glfwTerminateScarlet(void) { }
+void _glfwTerminateScarlet(void)
+{
+    if (_glfw.scarlet.ui) _glfwPlatformFreeModule(_glfw.scarlet.ui);
+    _glfw.scarlet.ui = NULL;
+}
